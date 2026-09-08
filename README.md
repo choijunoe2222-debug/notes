@@ -39,4 +39,3 @@ npm run test:pdf
 `test:pdf`는 실제 변환 모듈을 사용해 괄호·코드 원문 보존, 한글 수식 상자, 표, 오류 수식 대체, 너비 초과 방지를 검사합니다. `tmp/pdfs/regression/compatibility.pdf`를 생성하므로 수식/폰트/Chromium을 변경할 때 페이지 이미지도 확인하세요. Windows에서는 위 명령의 `npm`을 `npm.cmd`로 실행할 수 있습니다.
 
 MathJax와 한국어 글꼴은 고정 버전으로 설치하고 서버에 포함합니다. PDF 생성 중 CDN이나 외부 글꼴에 의존하지 않습니다. 배포 빌드에서 Chromium·MathJax·폰트 파일 누락을 검사합니다.
-

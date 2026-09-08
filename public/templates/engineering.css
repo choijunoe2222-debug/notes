@@ -1,0 +1,38 @@
+@page { size: A4; margin: 14mm 14mm 16mm; }
+* { box-sizing: border-box; }
+html { font-family: 'Noto Sans KR Variable', sans-serif; font-size: 10pt; line-height: 1.6; color: #18212c; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; width: 182mm; }
+h1,h2,h3,h4,h5,h6 { line-height: 1.35; break-after: avoid; }
+h1 { font-size: 20pt; margin: 0 0 6mm; }
+h2 { font-size: 15pt; margin: 8mm 0 3mm; border-bottom: 1px solid #b9c3ce; padding-bottom: 2mm; }
+h3 { font-size: 12pt; margin: 6mm 0 2mm; }
+h4,h5,h6 { font-size: 10.5pt; }
+p { margin: 0 0 3mm; orphans: 3; widows: 3; overflow-wrap: anywhere; }
+.document-header { border-bottom: 2px solid #253b50; margin-bottom: 7mm; }
+.eyebrow { font-size: 8pt; letter-spacing: 2px; color: #657587; }
+ul,ol { padding-left: 6mm; }
+li { margin-bottom: 1mm; overflow-wrap: anywhere; }
+blockquote { margin: 4mm 0; padding: 3mm 4mm; border-left: 3px solid #53677e; background: #f1f4f7; box-decoration-break: clone; }
+blockquote p:last-child { margin-bottom: 0; }
+hr { border: 0; border-top: 1px solid #cbd3dc; margin: 6mm 0; }
+pre,code { font-family: 'Nanum Gothic Coding', monospace; font-variant-ligatures: none; }
+.diagram-cell { display: inline-block; width: 1ch; }
+.diagram-cell > span { display: inline-block; width: 2ch; font-family: 'Noto Sans KR Variable', sans-serif; transform: scaleX(.5); transform-origin: left; }
+code { font-size: 9pt; }
+pre { margin: 4mm 0; padding: 3mm; border: 1px solid #cbd3dc; background: #f7f8fa; font-size: 9pt; line-height: 1.45; white-space: pre; tab-size: 4; box-decoration-break: clone; }
+pre code { font-size: inherit; }
+pre:has(.diagram-cell) { line-height: 1; }
+table { width: 100%; border-collapse: collapse; margin: 4mm 0; table-layout: fixed; font-size: 9pt; }
+th,td { border: 1px solid #bac4d0; padding: 2mm; vertical-align: top; overflow-wrap: anywhere; }
+th { background: #eef2f6; font-weight: 700; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+.math-block { margin: 4mm 0; text-align: center; break-inside: avoid; }
+.math-inline { display: inline; }
+mjx-container { max-width: 100%; }
+mjx-container[jax='SVG'] > svg { max-width: 100%; height: auto; }
+mjx-container text { font-family: 'Noto Sans KR Variable', sans-serif !important; }
+.math-source,.math-fallback { white-space: pre-wrap; overflow-wrap: anywhere; }
+.math-fallback,.conversion-warning,.image-source { color: #6b3b12; background: #fff4dc; border: 1px solid #d7b77c; padding: 2mm; }
+.conversion-warning { font-size: 8pt; margin-bottom: 4mm; }
+a { color: inherit; overflow-wrap: anywhere; }
