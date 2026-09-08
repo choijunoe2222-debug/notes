@@ -64,6 +64,12 @@ button { color: inherit; }
 
 .preview-panel .panel-title { padding: 20px 22px 0; height: 54px; }
 .preview-wrap { min-height: 0; flex: 1; padding: 0 20px 20px; overflow: hidden; }
+.pdf-viewer { height: 100%; display: flex; flex-direction: column; }
+.pdf-toolbar { display: flex; align-items: center; justify-content: center; gap: 18px; padding: 10px; font-size: 12px; }
+.pdf-toolbar button { border: 1px solid #ccc; border-radius: 5px; background: white; padding: 5px 12px; cursor: pointer; }
+.pdf-toolbar button:disabled { opacity: .4; cursor: default; }
+.pdf-page-scroll { overflow: auto; max-height: 760px; }
+.pdf-page-scroll canvas { width: 100%; height: auto; display: block; background: white; }
 .preview-canvas { width: 100%; height: 100%; min-height: 608px; overflow: hidden; border: 1px solid #d0cfca; background: #dddcd7; }
 .preview-frame { width: calc(100% / var(--preview-zoom)); height: calc(100% / var(--preview-zoom)); border: 0; transform: scale(var(--preview-zoom)); transform-origin: top left; background: #e8e8e8; }
 .preview-empty { height: 100%; min-height: 608px; display: grid; place-content: center; justify-items: center; border: 1px dashed #cbc9c3; background: rgba(255,255,255,.46); text-align: center; }

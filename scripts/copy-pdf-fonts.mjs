@@ -19,3 +19,4 @@ await Promise.all(fontPackages.map(async ([packageName, outputName]) => {
 }));
 
 console.log("[pdf-fonts] prepared self-hosted Korean text and monospace assets");
+await fs.copyFile(path.join(process.cwd(), "node_modules/pdfjs-dist/build/pdf.worker.min.mjs"), path.join(process.cwd(), "public/pdf.worker.min.mjs"));

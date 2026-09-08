@@ -1,0 +1,9 @@
+.next
+node_modules
+tmp
+output
+public/fonts/noto-sans-kr
+public/fonts/nanum-gothic-coding
+public/pdf.worker.min.mjs
+.env*
+*.log
