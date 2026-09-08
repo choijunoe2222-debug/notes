@@ -244,7 +244,7 @@ export function DocumentEditor() {
           <label htmlFor="template">문서 형식</label>
           <div className="select-shell">
             <select id="template" defaultValue="engineering" aria-label="문서 형식">
-              <option value="engineering">공학 강의 정리 · A4 전체 너비</option>
+              <option value="engineering">공학 강의 정리 · A4 2단</option>
             </select>
             <ChevronDown size={15} />
           </div>
@@ -290,7 +290,7 @@ export function DocumentEditor() {
         </div>
 
         <div className={`preview-panel ${activeMobileTab !== "preview" ? "mobile-hidden" : ""}`}>
-          <div className="panel-title"><div><span>02</span><strong>실제 PDF 미리보기</strong></div><span className="a4-badge">A4 · 원본 PDF</span></div>
+          <div className="panel-title"><div><span>02</span><strong>실제 PDF 미리보기</strong></div><span className="a4-badge">A4 · 2단 PDF</span></div>
           <div className="preview-wrap"><DocumentPreview blob={pdfBlob} /></div>
         </div>
       </section>
