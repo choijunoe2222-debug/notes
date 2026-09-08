@@ -16,7 +16,7 @@ export async function generatePdf(html: string) {
       Object.assign(window, { MathJax: {
         startup: { typeset: false },
         tex: { packages: { "[-]": ["autoload", "require", "noundefined", "noerrors"] }, maxBuffer: 100000 },
-        svg: { fontCache: "local", mtextInheritFont: true, merrorInheritFont: true },
+        svg: { fontCache: "local", mtextInheritFont: false, mtextFont: "Noto Sans KR Variable", merrorInheritFont: false, merrorFont: "Noto Sans KR Variable" },
         options: { enableAssistiveMml: false },
       } });
     });
