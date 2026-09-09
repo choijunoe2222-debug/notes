@@ -16,7 +16,9 @@ export function clipboardToMarkdown({ text, html }: ClipboardSource) {
     container.replaceWith(document.createTextNode(key));
   }
   // A copy-code button already provides Markdown; don't escape it a second time.
-  if (!math.size && /^(?:#{1,6}\s|```|~~~|\$\$|\\\[)/m.test(text)) return text;
+  // Plain TeX must not pass through Turndown: it escapes the surviving backslashes.
+  if (!math.size && (/^(?:#{1,6}\s|```|~~~|\$\$|\\\[)/m.test(text)
+    || /\\[A-Za-z]+|\\\(/.test(text))) return text;
   const converter = new TurndownService({ headingStyle: "atx", codeBlockStyle: "fenced", bulletListMarker: "-" });
   converter.addRule("table", {
     filter: "table",
@@ -30,6 +32,6 @@ export function clipboardToMarkdown({ text, html }: ClipboardSource) {
     },
   });
   let result = converter.turndown(document.body);
-  for (const [key, value] of math) result = result.replaceAll(key, value);
+  for (const [key, value] of math) result = result.replaceAll(key, () => value);
   return result || text;
 }

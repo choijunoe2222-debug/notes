@@ -13,6 +13,41 @@ md.renderer.rules.fence = (tokens, index) => renderCode(tokens[index].content);
 md.renderer.rules.code_block = (tokens, index) => renderCode(tokens[index].content);
 type Environment = { warnings: string[] };
 
+// ponytail: only recover isolated, balanced TeX blocks; ambiguous prose stays literal.
+function isBareMath(source: string) {
+  if (!/\\(?:boxed|frac|dfrac|tfrac|dot|ddot|begin|sqrt|sum|int|text|overline|vec|partial|alpha|beta|Delta|rightarrow|qquad)\b/.test(source)) return false;
+  let depth = 0;
+  const environments: string[] = [];
+  for (const match of source.matchAll(/\\begin\{([^}]+)\}|\\end\{([^}]+)\}|\\[^A-Za-z]|[{}]/g)) {
+    if (match[1]) environments.push(match[1]);
+    else if (match[2]) { if (environments.pop() !== match[2]) return false; }
+    else if (match[0] === "{") depth++;
+    else if (match[0] === "}" && --depth < 0) return false;
+  }
+  if (depth || environments.length) return false;
+  const symbols = source.replace(/\\(?:text|mathrm|operatorname)\{[^{}]*\}/g, "x")
+    .replace(/\\(?:begin|end)\{[^{}]*\}/g, "")
+    .replace(/\\[A-Za-z]+/g, "x");
+  return !/[^A-Za-z0-9\s{}()[\]+\-*/=<>^_.,:;!|'\\&%]/.test(symbols)
+    && !/[A-Za-z]{3,}/.test(symbols);
+}
+
+md.block.ruler.before("lheading", "bare_math", (state, start, end, silent) => {
+  if (state.sCount[start] - state.blkIndent >= 4) return false;
+  let last = start;
+  while (last < end && !state.isEmpty(last) && state.sCount[last] >= state.blkIndent) last++;
+  const source = state.getLines(start, last, state.blkIndent, false).trimEnd();
+  if (!isBareMath(source)) return false;
+  if (silent) return true;
+  const token = state.push("math", "", 0);
+  token.content = source;
+  token.meta = { display: true, source };
+  token.map = [start, last];
+  (state.env as Environment).warnings.push("구분자가 없는 독립 LaTeX 블록을 수식으로 복구했습니다.");
+  state.line = last;
+  return true;
+});
+
 // Tokenize before Markdown can consume TeX backslashes and underscores.
 md.inline.ruler.before("escape", "math", (state, silent) => {
   const rest = state.src.slice(state.pos);
