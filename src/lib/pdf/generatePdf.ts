@@ -41,6 +41,15 @@ export async function generatePdf(html: string) {
         }
       }
       await document.fonts.ready;
+      // Keep long formulas readable: use both columns instead of shrinking into one.
+      for (const block of document.querySelectorAll<HTMLElement>(".math-block:not(.math-fallback)")) {
+        const svg = block.querySelector<SVGSVGElement>("svg");
+        if (!svg) continue;
+        svg.style.maxWidth = "none";
+        const naturalWidth = svg.getBoundingClientRect().width;
+        svg.style.maxWidth = "";
+        if (naturalWidth > block.clientWidth * 1.25) block.classList.add("math-wide");
+      }
       // Fit the whole monospaced block, never wrap individual diagram lines.
       for (const pre of document.querySelectorAll<HTMLElement>("pre:not(.math-fallback)")) {
         const style = getComputedStyle(pre);

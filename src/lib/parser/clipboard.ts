@@ -1,4 +1,5 @@
 import TurndownService from "turndown";
+import { isBareMath } from "./parseDocument";
 
 export type ClipboardSource = { text: string; html: string };
 
@@ -18,7 +19,7 @@ export function clipboardToMarkdown({ text, html }: ClipboardSource) {
   // A copy-code button already provides Markdown; don't escape it a second time.
   // Plain TeX must not pass through Turndown: it escapes the surviving backslashes.
   if (!math.size && (/^(?:#{1,6}\s|```|~~~|\$\$|\\\[)/m.test(text)
-    || /\\[A-Za-z]+|\\\(/.test(text))) return text;
+    || /\\[A-Za-z]+|\\\(/.test(text) || text.split(/\n\s*\n/).some(isBareMath))) return text;
   const converter = new TurndownService({ headingStyle: "atx", codeBlockStyle: "fenced", bulletListMarker: "-" });
   converter.addRule("table", {
     filter: "table",

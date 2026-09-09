@@ -29,6 +29,7 @@ th { background: #eef2f6; font-weight: 700; }
 thead { display: table-header-group; }
 tr { break-inside: avoid; }
 .math-block { margin: 3mm 0; text-align: center; break-inside: avoid; }
+.math-wide { column-span: all; }
 .math-inline { display: inline; }
 mjx-container { max-width: 100%; }
 mjx-container[jax='SVG'] > svg { max-width: 100%; height: auto; }

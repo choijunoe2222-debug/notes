@@ -14,8 +14,10 @@ md.renderer.rules.code_block = (tokens, index) => renderCode(tokens[index].conte
 type Environment = { warnings: string[] };
 
 // ponytail: only recover isolated, balanced TeX blocks; ambiguous prose stays literal.
-function isBareMath(source: string) {
-  if (!/\\(?:boxed|frac|dfrac|tfrac|dot|ddot|begin|sqrt|sum|int|text|overline|vec|partial|alpha|beta|Delta|rightarrow|qquad)\b/.test(source)) return false;
+export function isBareMath(source: string) {
+  if (/\\[()[\]]|\$|`/.test(source)) return false;
+  if (!/\\(?:[A-Za-z]+|[,;! ])|[A-Za-z][_^][{\dA-Za-z]|\d[^\n]*[=]|[=]\s*\[?\d/.test(source)) return false;
+  if (/\\\\[A-Za-z]/.test(source)) return false;
   let depth = 0;
   const environments: string[] = [];
   for (const match of source.matchAll(/\\begin\{([^}]+)\}|\\end\{([^}]+)\}|\\[^A-Za-z]|[{}]/g)) {
@@ -25,9 +27,9 @@ function isBareMath(source: string) {
     else if (match[0] === "}" && --depth < 0) return false;
   }
   if (depth || environments.length) return false;
-  const symbols = source.replace(/\\(?:text|mathrm|operatorname)\{[^{}]*\}/g, "x")
+  const symbols = source.replace(/\\(?:text|mathrm|operatorname)\{[^{}]*\}/g, " ")
     .replace(/\\(?:begin|end)\{[^{}]*\}/g, "")
-    .replace(/\\[A-Za-z]+/g, "x");
+    .replace(/\\[A-Za-z]+/g, " ");
   return !/[^A-Za-z0-9\s{}()[\]+\-*/=<>^_.,:;!|'\\&%]/.test(symbols)
     && !/[A-Za-z]{3,}/.test(symbols);
 }
@@ -37,18 +39,32 @@ md.block.ruler.before("lheading", "bare_math", (state, start, end, silent) => {
   let last = start;
   while (last < end && !state.isEmpty(last) && state.sCount[last] >= state.blkIndent) last++;
   const source = state.getLines(start, last, state.blkIndent, false).trimEnd();
-  if (!isBareMath(source)) return false;
+  const diagram = source.includes("\n") && (source.match(/[\u2500-\u259f]/g)?.length ?? 0) >= 3 && !/\\[A-Za-z]+|[`$]/.test(source);
+  if (!diagram && !isBareMath(source)) return false;
   if (silent) return true;
-  const token = state.push("math", "", 0);
+  const token = state.push(diagram ? "code_block" : "math", "", 0);
   token.content = source;
   token.meta = { display: true, source };
   token.map = [start, last];
-  (state.env as Environment).warnings.push("구분자가 없는 독립 LaTeX 블록을 수식으로 복구했습니다.");
+  (state.env as Environment).warnings.push(diagram ? "문자 그림의 공백과 줄바꿈을 보존했습니다." : "구분자가 없는 독립 LaTeX 블록을 수식으로 복구했습니다.");
   state.line = last;
   return true;
 });
 
 // Tokenize before Markdown can consume TeX backslashes and underscores.
+md.inline.ruler.before("text", "bare_math_inline", (state, silent) => {
+  const rest = state.src.slice(state.pos).split("\n", 1)[0];
+  // A whole formula line in a list, or a command-led formula ending at Korean prose.
+  const source = isBareMath(rest) ? rest : rest.match(/^\\[A-Za-z]+[A-Za-z0-9\s{}()[\]+\-*/=<>^_.,:;!|'\\&%]*/)?.[0].trimEnd();
+  if (!source || !isBareMath(source)) return false;
+  if (!silent) {
+    const token = state.push("math", "", 0);
+    token.content = source;
+    token.meta = { display: false, source };
+  }
+  state.pos += source.length;
+  return true;
+});
 md.inline.ruler.before("escape", "math", (state, silent) => {
   const rest = state.src.slice(state.pos);
   const open = ["\\(", "\\[", "$$", "$"].find((delimiter) => rest.startsWith(delimiter));
